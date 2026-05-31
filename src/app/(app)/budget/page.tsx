@@ -13,6 +13,7 @@ export default async function BudgetPage() {
         items={data.budgetItems}
         transactions={data.transactions}
         entities={data.entities}
+        categories={data.categories.filter((c) => c.kind === "expense")}
         settings={data.settings}
         userId={data.user.id}
       />

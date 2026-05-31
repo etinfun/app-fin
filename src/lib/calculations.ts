@@ -23,6 +23,7 @@ export function sumTransactions(
     entityId?: string;
     periodType?: ReportPeriodType;
     periodKey?: string;
+    category?: string;
     homeCurrency?: Currency;
     ngnPerUsd?: number;
     convert?: boolean;
@@ -32,6 +33,7 @@ export function sumTransactions(
     entityId,
     periodType,
     periodKey,
+    category,
     homeCurrency = "NGN",
     ngnPerUsd = 1600,
     convert = false,
@@ -40,6 +42,7 @@ export function sumTransactions(
   return transactions
     .filter((t) => t.type === type)
     .filter((t) => !entityId || t.entity_id === entityId)
+    .filter((t) => !category || t.category === category)
     .filter((t) => {
       if (!periodType || !periodKey) return true;
       if (periodType === "day") return getDayKey(t.date) === periodKey;

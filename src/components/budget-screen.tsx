@@ -25,6 +25,7 @@ import {
 } from "@/components/ui/select";
 import type {
   BudgetItem,
+  Category,
   Currency,
   Entity,
   PeriodType,
@@ -36,12 +37,14 @@ export function BudgetScreen({
   items: initial,
   transactions,
   entities,
+  categories,
   settings,
   userId,
 }: {
   items: BudgetItem[];
   transactions: Transaction[];
   entities: Entity[];
+  categories: Category[];
   settings: Settings;
   userId: string;
 }) {
@@ -208,6 +211,7 @@ export function BudgetScreen({
       {(showForm || editing) && (
         <BudgetItemForm
           entities={entities}
+          categories={categories}
           userId={userId}
           periodType={periodType}
           periodKey={periodKey}
@@ -230,19 +234,50 @@ export function BudgetScreen({
             No budget items for this period.
           </p>
         ) : (
-          filteredItems.map((item) => (
+          filteredItems.map((item) => {
+            const actual = sumTransactions(transactions, "expense", {
+              entityId: item.entity_id,
+              periodType,
+              periodKey,
+              category: item.category,
+              homeCurrency: settings.home_currency,
+              ngnPerUsd: Number(settings.ngn_per_usd),
+              convert: false,
+            });
+            const budgeted = Number(item.estimated_cost);
+            const lineVariance = budgeted - actual;
+
+            return (
             <div key={item.id} className="px-4 py-4 space-y-2">
               <div className="flex justify-between gap-3">
                 <div>
-                  <p className="font-medium">{item.item_name}</p>
+                  <p className="font-medium">{item.category}</p>
+                  {item.item_name !== item.category && (
+                    <p className="text-sm text-muted-foreground mt-0.5">
+                      {item.item_name}
+                    </p>
+                  )}
                   {item.justification && (
                     <p className="text-xs text-muted-foreground mt-1">
                       {item.justification}
                     </p>
                   )}
+                  <p className="text-xs text-muted-foreground mt-2">
+                    Spent {formatMoney(actual, item.currency)} ·{" "}
+                    <span
+                      className={cn(
+                        lineVariance >= 0
+                          ? "text-emerald-600 dark:text-emerald-400"
+                          : "text-red-600 dark:text-red-400"
+                      )}
+                    >
+                      {lineVariance >= 0 ? "under" : "over"} by{" "}
+                      {formatMoney(Math.abs(lineVariance), item.currency)}
+                    </span>
+                  </p>
                 </div>
                 <p className="font-semibold shrink-0">
-                  {formatMoney(Number(item.estimated_cost), item.currency)}
+                  {formatMoney(budgeted, item.currency)}
                 </p>
               </div>
               <div className="flex gap-2">
@@ -267,7 +302,8 @@ export function BudgetScreen({
                 </Button>
               </div>
             </div>
-          ))
+            );
+          })
         )}
       </div>
     </div>
@@ -301,6 +337,7 @@ function TotalCard({
 
 function BudgetItemForm({
   entities,
+  categories,
   userId,
   periodType,
   periodKey,
@@ -309,6 +346,7 @@ function BudgetItemForm({
   onCancel,
 }: {
   entities: Entity[];
+  categories: Category[];
   userId: string;
   periodType: PeriodType;
   periodKey: string;
@@ -316,7 +354,10 @@ function BudgetItemForm({
   onDone: () => void;
   onCancel: () => void;
 }) {
-  const [itemName, setItemName] = useState(item?.item_name ?? "");
+  const [category, setCategory] = useState(item?.category ?? "");
+  const [itemName, setItemName] = useState(
+    item?.item_name && item.item_name !== item.category ? item.item_name : ""
+  );
   const [cost, setCost] = useState(String(item?.estimated_cost ?? ""));
   const [currency, setCurrency] = useState<Currency>(
     item?.currency ?? "NGN"
@@ -327,15 +368,17 @@ function BudgetItemForm({
 
   const save = async () => {
     const parsed = parseFloat(cost);
-    if (!itemName.trim() || !parsed || !entityId) return;
+    if (!category || !parsed || !entityId) return;
     setSaving(true);
     const supabase = createClient();
+    const label = itemName.trim() || category;
     const row = {
       user_id: userId,
       entity_id: entityId,
       period_type: periodType,
       period_key: periodKey,
-      item_name: itemName.trim(),
+      category,
+      item_name: label,
       estimated_cost: parsed,
       currency,
       justification: justification.trim() || null,
@@ -352,8 +395,31 @@ function BudgetItemForm({
 
   return (
     <div className="rounded-2xl border border-border/60 p-4 space-y-3">
-      <Label>Item name</Label>
-      <Input value={itemName} onChange={(e) => setItemName(e.target.value)} className="h-11" />
+      <Label>Category</Label>
+      <div className="flex flex-wrap gap-2">
+        {categories.map((c) => (
+          <button
+            key={c.id}
+            type="button"
+            onClick={() => setCategory(c.name)}
+            className={cn(
+              "rounded-full px-4 py-2.5 text-sm font-medium min-h-[44px] transition-colors",
+              category === c.name
+                ? "bg-foreground text-background"
+                : "bg-muted text-muted-foreground"
+            )}
+          >
+            {c.name}
+          </button>
+        ))}
+      </div>
+      <Label>Label (optional)</Label>
+      <Input
+        value={itemName}
+        onChange={(e) => setItemName(e.target.value)}
+        placeholder="e.g. Weekly groceries"
+        className="h-11"
+      />
       <Input
         type="number"
         placeholder="Estimated cost"
@@ -401,7 +467,7 @@ function BudgetItemForm({
         className="h-11"
       />
       <div className="flex gap-2">
-        <Button className="flex-1 h-11" onClick={save} disabled={saving}>
+        <Button className="flex-1 h-11" onClick={save} disabled={saving || !category}>
           Save
         </Button>
         <Button variant="secondary" className="flex-1 h-11" onClick={onCancel}>

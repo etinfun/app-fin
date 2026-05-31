@@ -51,6 +51,7 @@ export interface BudgetItem {
   entity_id: string;
   period_type: PeriodType;
   period_key: string;
+  category: string;
   item_name: string;
   estimated_cost: number;
   currency: Currency;
