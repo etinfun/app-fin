@@ -30,6 +30,10 @@ export function BalancesEditor({
   const router = useRouter();
   const [ngnPerUsd, setNgnPerUsd] = useState(String(settings.ngn_per_usd));
   const [savingRate, setSavingRate] = useState(false);
+  const [appLockEnabled, setAppLockEnabled] = useState(
+    settings.app_lock_enabled ?? true
+  );
+  const [savingAppLock, setSavingAppLock] = useState(false);
 
   const getBalance = (entityId: string, currency: "NGN" | "USD") =>
     initial.find((b) => b.entity_id === entityId && b.currency === currency);
@@ -71,6 +75,21 @@ export function BalancesEditor({
     router.refresh();
   };
 
+  const handleToggleAppLock = async (enabled: boolean) => {
+    setSavingAppLock(true);
+    setAppLockEnabled(enabled);
+    const supabase = createClient();
+    await supabase
+      .from("settings")
+      .update({
+        app_lock_enabled: enabled,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("user_id", userId);
+    setSavingAppLock(false);
+    router.refresh();
+  };
+
   return (
     <div className="space-y-8">
       <section className="space-y-4">
@@ -98,6 +117,39 @@ export function BalancesEditor({
           >
             {savingRate ? "Saving…" : "Save rate"}
           </Button>
+        </div>
+      </section>
+
+      <section className="space-y-4">
+        <h2 className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
+          Security
+        </h2>
+        <div className="rounded-2xl border border-border/60 p-4 space-y-3">
+          <div className="flex items-start justify-between gap-4">
+            <div className="space-y-1">
+              <p className="font-medium">Require Face ID</p>
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                Lock the app when you leave or switch away. Works on the home
+                screen app — iOS cannot lock PWAs from Settings like Safari.
+              </p>
+            </div>
+            <button
+              type="button"
+              role="switch"
+              aria-checked={appLockEnabled}
+              disabled={savingAppLock}
+              onClick={() => handleToggleAppLock(!appLockEnabled)}
+              className={`relative inline-flex h-7 w-12 shrink-0 items-center rounded-full transition-colors ${
+                appLockEnabled ? "bg-primary" : "bg-muted"
+              }`}
+            >
+              <span
+                className={`inline-block h-5 w-5 transform rounded-full bg-white shadow transition-transform ${
+                  appLockEnabled ? "translate-x-6" : "translate-x-1"
+                }`}
+              />
+            </button>
+          </div>
         </div>
       </section>
 

@@ -9,6 +9,8 @@ export interface Settings {
   user_id: string;
   home_currency: Currency;
   ngn_per_usd: number;
+  app_lock_enabled: boolean;
+  app_lock_credential_id: string | null;
   updated_at: string;
 }
 

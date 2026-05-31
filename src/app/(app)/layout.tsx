@@ -2,9 +2,7 @@ export const dynamic = "force-dynamic";
 
 import { redirect } from "next/navigation";
 import { getAppData } from "@/lib/data";
-import { EntityProvider } from "@/components/entity-context";
-import { AppNav } from "@/components/app-nav";
-import { AddFab } from "@/components/add-fab";
+import { AppShell } from "@/components/app-shell";
 
 export default async function AppLayout({
   children,
@@ -15,12 +13,13 @@ export default async function AppLayout({
   if (!data) redirect("/login");
 
   return (
-    <EntityProvider entities={data.entities}>
-      <div className="mx-auto min-h-screen max-w-lg bg-background pb-[calc(5.5rem+env(safe-area-inset-bottom))] pt-[env(safe-area-inset-top)]">
-        {children}
-        <AddFab />
-        <AppNav />
-      </div>
-    </EntityProvider>
+    <AppShell
+      userId={data.user.id}
+      appLockEnabled={data.settings.app_lock_enabled ?? true}
+      appLockCredentialId={data.settings.app_lock_credential_id ?? null}
+      entities={data.entities}
+    >
+      {children}
+    </AppShell>
   );
 }
