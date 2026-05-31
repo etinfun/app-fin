@@ -153,7 +153,9 @@ export function TransactionsList({
       <div className="divide-y divide-border rounded-2xl border border-border/60 overflow-hidden">
         {filtered.length === 0 ? (
           <p className="p-6 text-center text-muted-foreground text-sm">
-            No transactions yet.
+            {initial.length === 0
+              ? "No transactions yet. Tap + to add your first one."
+              : "No transactions match these filters."}
           </p>
         ) : (
           filtered.map((tx) => (

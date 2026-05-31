@@ -169,19 +169,21 @@ export function Dashboard({
         <h2 className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
           Runway
         </h2>
-        <StatCard
-          label={runway.label}
-          value={
-            runway.months === null
-              ? "—"
-              : `${runway.months.toFixed(1)} mo`
-          }
-          subValue={
-            runway.monthlyBurn > 0
-              ? `Burn ~${formatMoney(runway.monthlyBurn, homeCurrency)}/mo`
-              : "Not enough data yet"
-          }
-        />
+        {runway.months === null ? (
+          <div className="rounded-2xl bg-muted/50 px-4 py-3 text-sm text-muted-foreground">
+            Add income and expenses to see how long your balance lasts.
+          </div>
+        ) : (
+          <StatCard
+            label={runway.label}
+            value={`${runway.months.toFixed(1)} mo`}
+            subValue={
+              runway.monthlyBurn > 0
+                ? `Burn ~${formatMoney(runway.monthlyBurn, homeCurrency)}/mo`
+                : undefined
+            }
+          />
+        )}
       </section>
     </div>
   );
