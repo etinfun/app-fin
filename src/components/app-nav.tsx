@@ -36,7 +36,7 @@ export function AppNav() {
               key={href}
               href={href}
               className={cn(
-                "flex min-h-[52px] min-w-[52px] flex-1 flex-col items-center justify-center gap-0.5 px-1 py-2 text-[10px] font-medium transition-colors",
+                "flex min-h-[52px] min-w-[52px] flex-1 flex-col items-center justify-center gap-0.5 px-1 py-2 text-[11px] font-medium transition-colors",
                 active
                   ? "text-foreground"
                   : "text-muted-foreground active:text-foreground"
