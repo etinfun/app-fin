@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { format } from "date-fns";
+import { applyTransactionToBalance } from "@/lib/balance-updates";
 import { createClient } from "@/lib/supabase/client";
 import { useEntityContext } from "@/components/entity-context";
 import { Button } from "@/components/ui/button";
@@ -57,7 +58,7 @@ export default function AddTransactionPage({
 
     setSaving(true);
     const supabase = createClient();
-    const { error } = await supabase.from("transactions").insert({
+    const row = {
       user_id: userId,
       entity_id: entityId,
       name: name.trim(),
@@ -67,10 +68,18 @@ export default function AddTransactionPage({
       category,
       date,
       note: note.trim() || null,
-    });
+    };
+
+    const { error } = await supabase.from("transactions").insert(row);
+
+    if (error) {
+      setSaving(false);
+      return;
+    }
+
+    await applyTransactionToBalance(supabase, row);
 
     setSaving(false);
-    if (error) return;
 
     setLastUsedEntityId(entityId);
     router.push("/");

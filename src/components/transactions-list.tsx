@@ -3,6 +3,10 @@
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { format, parseISO } from "date-fns";
+import {
+  reverseTransactionOnBalance,
+  syncBalanceForTransactionEdit,
+} from "@/lib/balance-updates";
 import { createClient } from "@/lib/supabase/client";
 import { formatMoney } from "@/lib/currency";
 import { cn } from "@/lib/utils";
@@ -52,27 +56,29 @@ export function TransactionsList({
   const entityName = (id: string) =>
     entities.find((e) => e.id === id)?.name ?? "Unknown";
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = async (tx: Transaction) => {
     const supabase = createClient();
-    await supabase.from("transactions").delete().eq("id", id);
+    await reverseTransactionOnBalance(supabase, tx);
+    await supabase.from("transactions").delete().eq("id", tx.id);
     router.refresh();
   };
 
-  const handleUpdate = async (tx: Transaction) => {
+  const handleUpdate = async (before: Transaction, after: Transaction) => {
     const supabase = createClient();
+    await syncBalanceForTransactionEdit(supabase, before, after);
     await supabase
       .from("transactions")
       .update({
-        name: tx.name,
-        amount: tx.amount,
-        currency: tx.currency,
-        type: tx.type,
-        category: tx.category,
-        entity_id: tx.entity_id,
-        date: tx.date,
-        note: tx.note,
+        name: after.name,
+        amount: after.amount,
+        currency: after.currency,
+        type: after.type,
+        category: after.category,
+        entity_id: after.entity_id,
+        date: after.date,
+        note: after.note,
       })
-      .eq("id", tx.id);
+      .eq("id", after.id);
     setEditing(null);
     router.refresh();
   };
@@ -197,7 +203,7 @@ export function TransactionsList({
                       tx={editing}
                       entities={entities}
                       onChange={setEditing}
-                      onSave={() => handleUpdate(editing)}
+                      onSave={() => editing && handleUpdate(tx, editing)}
                       onCancel={() => setEditing(null)}
                     />
                   ) : (
@@ -212,7 +218,7 @@ export function TransactionsList({
                       <Button
                         variant="destructive"
                         className="flex-1 h-11"
-                        onClick={() => handleDelete(tx.id)}
+                        onClick={() => handleDelete(tx)}
                       >
                         Delete
                       </Button>
