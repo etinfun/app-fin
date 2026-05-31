@@ -80,7 +80,14 @@ export function TransactionsList({
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-2 gap-2">
-        <Select value={entityFilter} onValueChange={(v) => v && setEntityFilter(v)}>
+        <Select
+          value={entityFilter}
+          onValueChange={(v) => v && setEntityFilter(v)}
+          items={{
+            all: "All entities",
+            ...Object.fromEntries(entities.map((e) => [e.id, e.name])),
+          }}
+        >
           <SelectTrigger className="h-11">
             <SelectValue placeholder="Entity" />
           </SelectTrigger>
@@ -93,7 +100,11 @@ export function TransactionsList({
             ))}
           </SelectContent>
         </Select>
-        <Select value={typeFilter} onValueChange={(v) => v && setTypeFilter(v)}>
+        <Select
+          value={typeFilter}
+          onValueChange={(v) => v && setTypeFilter(v)}
+          items={{ all: "All types", expense: "Expense", income: "Income" }}
+        >
           <SelectTrigger className="h-11">
             <SelectValue placeholder="Type" />
           </SelectTrigger>
@@ -103,7 +114,14 @@ export function TransactionsList({
             <SelectItem value="income">Income</SelectItem>
           </SelectContent>
         </Select>
-        <Select value={categoryFilter} onValueChange={(v) => v && setCategoryFilter(v)}>
+        <Select
+          value={categoryFilter}
+          onValueChange={(v) => v && setCategoryFilter(v)}
+          items={{
+            all: "All categories",
+            ...Object.fromEntries(categories.map((c) => [c, c])),
+          }}
+        >
           <SelectTrigger className="h-11 col-span-2">
             <SelectValue placeholder="Category" />
           </SelectTrigger>

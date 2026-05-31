@@ -226,6 +226,10 @@ export function ReportsScreen({
       <Select
         value={entityFilter}
         onValueChange={(v) => v && setEntityFilter(v)}
+        items={{
+          all: "All (combined)",
+          ...Object.fromEntries(entities.map((e) => [e.id, e.name])),
+        }}
       >
         <SelectTrigger className="h-11">
           <SelectValue />

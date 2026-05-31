@@ -149,6 +149,10 @@ export function BudgetScreen({
       <Select
         value={entityFilter}
         onValueChange={(v) => v && setEntityFilter(v)}
+        items={{
+          all: "All entities",
+          ...Object.fromEntries(entities.map((e) => [e.id, e.name])),
+        }}
       >
         <SelectTrigger className="h-11">
           <SelectValue placeholder="Entity" />
@@ -374,7 +378,11 @@ function BudgetItemForm({
           </button>
         ))}
       </div>
-      <Select value={entityId} onValueChange={(v) => v && setEntityId(v)}>
+      <Select
+        value={entityId}
+        onValueChange={(v) => v && setEntityId(v)}
+        items={Object.fromEntries(entities.map((e) => [e.id, e.name]))}
+      >
         <SelectTrigger className="h-11">
           <SelectValue />
         </SelectTrigger>
