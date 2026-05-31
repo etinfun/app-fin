@@ -7,14 +7,14 @@ export function EntitySwitcher({ className }: { className?: string }) {
   const { entities, selectedEntityId, setSelectedEntityId } = useEntityContext();
 
   const options: { id: EntityFilter; label: string }[] = [
-    ...entities.map((e) => ({ id: e.id, label: e.name })),
     { id: "all", label: "All" },
+    ...entities.map((e) => ({ id: e.id, label: e.name })),
   ];
 
   return (
     <div
       className={cn(
-        "flex gap-2 overflow-x-auto pb-1 scrollbar-none [-ms-overflow-style:none] [scrollbar-width:none]",
+        "flex gap-2 overflow-x-auto pb-1 -mx-4 px-4 scrollbar-none [-ms-overflow-style:none] [scrollbar-width:none]",
         className
       )}
     >
