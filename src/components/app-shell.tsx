@@ -32,7 +32,7 @@ export function AppShell({
         credentialId={credentialId}
         onCredentialRegistered={setCredentialId}
       >
-        <div className="mx-auto min-h-screen max-w-lg bg-background pb-[calc(5.5rem+env(safe-area-inset-bottom))] pt-[env(safe-area-inset-top)]">
+        <div className="mx-auto min-h-screen max-w-lg bg-background pb-[calc(9rem+env(safe-area-inset-bottom))] pt-[env(safe-area-inset-top)]">
           {children}
           <AddFab />
           <AppNav />
