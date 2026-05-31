@@ -102,16 +102,23 @@ export default function AddTransactionPage({
       </div>
 
       <div className="space-y-6">
-        <div>
-          <Input
-            type="text"
-            inputMode="decimal"
-            autoFocus
-            placeholder="0"
-            value={amount}
-            onChange={(e) => setAmount(e.target.value.replace(/[^\d.]/g, ""))}
-            className="h-auto border-0 bg-transparent px-0 text-5xl font-semibold tracking-tight shadow-none focus-visible:ring-0"
-          />
+        <div className="space-y-2">
+          <Label htmlFor="amount">Amount</Label>
+          <div className="flex items-baseline gap-1">
+            <span className="text-5xl font-semibold tracking-tight text-muted-foreground">
+              {currency === "NGN" ? "₦" : "$"}
+            </span>
+            <Input
+              id="amount"
+              type="text"
+              inputMode="decimal"
+              autoFocus
+              placeholder="0"
+              value={amount}
+              onChange={(e) => setAmount(e.target.value.replace(/[^\d.]/g, ""))}
+              className="h-auto border-0 bg-transparent px-0 text-5xl font-semibold tracking-tight text-foreground shadow-none placeholder:text-muted-foreground/40 focus-visible:ring-0"
+            />
+          </div>
         </div>
 
         <div className="grid grid-cols-2 gap-2">
