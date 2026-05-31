@@ -88,7 +88,7 @@ export function TransactionsList({
             ...Object.fromEntries(entities.map((e) => [e.id, e.name])),
           }}
         >
-          <SelectTrigger className="h-11">
+          <SelectTrigger className="h-11 w-full">
             <SelectValue placeholder="Entity" />
           </SelectTrigger>
           <SelectContent>
@@ -105,7 +105,7 @@ export function TransactionsList({
           onValueChange={(v) => v && setTypeFilter(v)}
           items={{ all: "All types", expense: "Expense", income: "Income" }}
         >
-          <SelectTrigger className="h-11">
+          <SelectTrigger className="h-11 w-full">
             <SelectValue placeholder="Type" />
           </SelectTrigger>
           <SelectContent>
@@ -122,7 +122,7 @@ export function TransactionsList({
             ...Object.fromEntries(categories.map((c) => [c, c])),
           }}
         >
-          <SelectTrigger className="h-11 col-span-2">
+          <SelectTrigger className="h-11 col-span-2 w-full">
             <SelectValue placeholder="Category" />
           </SelectTrigger>
           <SelectContent>
