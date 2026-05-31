@@ -12,6 +12,7 @@ import {
 } from "@/lib/calculations";
 import { entityUsesMultipleCurrencies } from "@/lib/entity-currency";
 import { formatMoney } from "@/lib/currency";
+import { cn } from "@/lib/utils";
 import type {
   AccountBalance,
   Currency,
@@ -141,28 +142,41 @@ export function Dashboard({
             </span>
           )}
         </h2>
-        {periodTotals.map((p) => (
-          <div key={p.key} className="space-y-2">
-            <p className="text-sm font-medium">{p.label}</p>
-            <div className="grid grid-cols-3 gap-2">
-              <StatCard
-                label="Spent"
-                value={formatForView(p.expense, displayCurrency)}
-                tone="negative"
-              />
-              <StatCard
-                label="Income"
-                value={formatForView(p.income, displayCurrency)}
-                tone="positive"
-              />
-              <StatCard
-                label="Net"
-                value={formatForView(p.net, displayCurrency)}
-                tone={p.net >= 0 ? "positive" : "negative"}
-              />
-            </div>
-          </div>
-        ))}
+        <div className="overflow-hidden rounded-2xl bg-muted/50">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="text-xs text-muted-foreground">
+                <th className="px-4 pt-3 pb-2 text-left font-medium"> </th>
+                <th className="px-3 pt-3 pb-2 text-right font-medium">Spent</th>
+                <th className="px-3 pt-3 pb-2 text-right font-medium">Income</th>
+                <th className="px-4 pt-3 pb-2 text-right font-medium">Net</th>
+              </tr>
+            </thead>
+            <tbody>
+              {periodTotals.map((p) => (
+                <tr key={p.key} className="border-t border-border/50">
+                  <td className="px-4 py-3 font-medium">{p.label}</td>
+                  <td className="px-3 py-3 text-right tabular-nums text-red-600 dark:text-red-400">
+                    {formatForView(p.expense, displayCurrency)}
+                  </td>
+                  <td className="px-3 py-3 text-right tabular-nums text-emerald-600 dark:text-emerald-400">
+                    {formatForView(p.income, displayCurrency)}
+                  </td>
+                  <td
+                    className={cn(
+                      "px-4 py-3 text-right font-medium tabular-nums",
+                      p.net >= 0
+                        ? "text-emerald-600 dark:text-emerald-400"
+                        : "text-red-600 dark:text-red-400"
+                    )}
+                  >
+                    {formatForView(p.net, displayCurrency)}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </section>
 
       <section className="space-y-2">
