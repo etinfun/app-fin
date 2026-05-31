@@ -36,7 +36,7 @@ export default function LoginPage() {
   return (
     <div className="flex min-h-screen flex-col justify-center px-6 pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]">
       <div className="mx-auto w-full max-w-sm">
-        <h1 className="text-3xl font-semibold tracking-tight">Finance</h1>
+        <h1 className="text-3xl font-semibold tracking-tight">Etin Finance</h1>
         <p className="mt-2 text-muted-foreground">
           Sign in with a magic link sent to your email.
         </p>

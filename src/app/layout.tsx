@@ -3,13 +3,13 @@ import "./globals.css";
 import { ServiceWorkerRegister } from "@/components/service-worker-register";
 
 export const metadata: Metadata = {
-  title: "Finance",
+  title: "Etin Finance",
   description: "Personal finance tracking",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: "Finance",
+    title: "Etin Finance",
   },
   icons: {
     apple: [{ url: "/apple-touch-icon.png", sizes: "180x180" }],
