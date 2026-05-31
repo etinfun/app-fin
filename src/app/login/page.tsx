@@ -38,7 +38,10 @@ export default function LoginPage() {
 
     setLoading(false);
     if (sendError) {
-      setError(sendError.message);
+      const msg = sendError.message.toLowerCase().includes("rate limit")
+        ? "Email rate limit reached (~2/hour on Supabase’s free sender). Wait about an hour, or set up custom SMTP in Supabase (Resend — takes ~10 min). If you already got an email, use the 6-digit code — no new email needed."
+        : sendError.message;
+      setError(msg);
       return;
     }
     setSent(true);
