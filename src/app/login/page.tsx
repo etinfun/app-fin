@@ -18,7 +18,7 @@ export default function LoginPage() {
   const [sent, setSent] = useState(false);
   const [error, setError] = useState<string | null>(
     authError === "auth"
-      ? "Sign-in link expired or opened in the wrong browser. Enter the 6-digit code from your email below."
+      ? "Sign-in link expired or opened in the wrong browser. Enter the code from your email below."
       : null
   );
 
@@ -50,8 +50,8 @@ export default function LoginPage() {
   const handleVerifyOtp = async (e: React.FormEvent) => {
     e.preventDefault();
     const token = otp.replace(/\s/g, "");
-    if (token.length !== 6) {
-      setError("Enter the 6-digit code from your email.");
+    if (token.length < 6) {
+      setError("Enter the code from your email.");
       return;
     }
 
@@ -80,7 +80,7 @@ export default function LoginPage() {
       <div className="mx-auto w-full max-w-sm">
         <h1 className="text-3xl font-semibold tracking-tight">Etin Finance</h1>
         <p className="mt-2 text-muted-foreground">
-          Sign in with a magic link or 6-digit code sent to your email.
+          Sign in with a magic link or one-time code sent to your email.
         </p>
 
         {sent ? (
@@ -95,17 +95,17 @@ export default function LoginPage() {
 
             <form onSubmit={handleVerifyOtp} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="otp">6-digit code</Label>
+                <Label htmlFor="otp">Email code</Label>
                 <Input
                   id="otp"
                   type="text"
                   inputMode="numeric"
                   autoComplete="one-time-code"
                   autoFocus
-                  maxLength={6}
+                  maxLength={8}
                   value={otp}
                   onChange={(e) =>
-                    setOtp(e.target.value.replace(/\D/g, "").slice(0, 6))
+                    setOtp(e.target.value.replace(/\D/g, "").slice(0, 8))
                   }
                   className="h-14 text-center text-2xl font-semibold tracking-[0.3em]"
                   placeholder="000000"
@@ -115,7 +115,7 @@ export default function LoginPage() {
               <Button
                 type="submit"
                 className="h-12 w-full text-base"
-                disabled={loading || otp.length !== 6}
+                disabled={loading || otp.length < 6}
               >
                 {loading ? "Verifying…" : "Sign in with code"}
               </Button>
