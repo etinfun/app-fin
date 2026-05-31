@@ -1,6 +1,7 @@
 {
+  "id": "/",
   "name": "Etin Finance",
-  "short_name": "Etin Finance",
+  "short_name": "Etin",
   "description": "Personal finance tracking",
   "start_url": "/",
   "display": "standalone",
