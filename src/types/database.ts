@@ -97,6 +97,10 @@ export const EXPENSE_CATEGORIES = [
   "Fruits",
   "Software",
   "Loan",
+  "Home Decor",
+  "Accessories",
+  "Bank Fees",
+  "Others",
 ];
 
 export const INCOME_CATEGORIES = ["Client Payment", "Sale", "Other"];
