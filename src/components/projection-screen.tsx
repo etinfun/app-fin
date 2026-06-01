@@ -271,11 +271,11 @@ function SummaryCard({
   tone?: "positive" | "negative";
 }) {
   return (
-    <div className="rounded-xl bg-muted/50 p-3">
+    <div className="flex min-h-[84px] flex-col rounded-xl bg-muted/50 p-3">
       <p className="text-xs text-muted-foreground">{label}</p>
       <p
         className={cn(
-          "text-sm font-semibold mt-1",
+          "mt-auto pt-1 text-sm font-semibold tabular-nums",
           tone === "positive" && "text-emerald-600 dark:text-emerald-400",
           tone === "negative" && "text-red-600 dark:text-red-400"
         )}
